@@ -13,7 +13,7 @@ class ClientInformation():
         className = self.__class__.__name__
         # utils.logMsg("%s %s" % (self.addonName, className), msg, int(lvl))
         if lvl < 1:
-            print >> sys.stderr, msg
+            print(msg, file=sys.stderr)
     
     def getVersion(self):
 
@@ -60,7 +60,7 @@ class DownloadUtils():
         self.className = self.__class__.__name__
         # utils.logMsg("%s %s" % (self.addonName, self.className), msg, int(lvl))
         if lvl < 1:
-            print >> sys.stderr, msg
+            print(msg, file=sys.stderr)
 
     def setUsername(self, username):
         # Reserved for UserClient only
@@ -344,7 +344,7 @@ class UserClient():
         className = self.__class__.__name__
         # utils.logMsg("%s %s" % (self.addonName, className), str(msg), int(lvl))
         if lvl < 1:
-            print >> sys.stderr, msg
+            print(msg, file=sys.stderr)
 
     def getUsername(self):
 
@@ -423,8 +423,8 @@ class UserClient():
         self.HasAccess = True
         return
 
-    def hashPassword(self, password=""):
-        sha1 = hashlib.sha1(password)
+    def hashPassword(self, password=b""):
+        sha1 = hashlib.sha1(password.encode('utf8'))
         return sha1.hexdigest()    
 
     def loadCurrUser(self, authenticated=False):
@@ -488,10 +488,10 @@ class UserClient():
         
         # Find user in list
         for user in users:
-            name = user[u'Name']
+            name = user['Name']
             userHasPassword = False
 
-            if (unicode(username, 'utf-8') in name):
+            if (username in name):
                 # Verify if user has a password
                 if (user.get("HasPassword") == True):
                     userHasPassword = True
@@ -515,13 +515,13 @@ class UserClient():
         accessToken = None
         try:
             self.logMsg("Auth_Reponse: %s" % result, 1)
-            accessToken = result[u'AccessToken']
+            accessToken = result['AccessToken']
         except:
             pass
 
         if (result != None and accessToken != None):
             self.currUser = username
-            userId = result[u'User'][u'Id']
+            userId = result['User']['Id']
             self.currToken = accessToken
             self.currUserId = userId
             self.logMsg("User Authenticated: %s" % accessToken)
